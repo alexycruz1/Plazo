@@ -11,7 +11,11 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,6 +29,23 @@ public class VM extends javax.swing.JFrame {
      */
     public VM() {
         initComponents();
+        String s = "";
+
+        s = "com.jtattoo.plaf.graphite.GraphiteLookAndFeel";
+
+        try {
+            javax.swing.UIManager.setLookAndFeel(s);
+            SwingUtilities.updateComponentTreeUI(this);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+
+        }
         cargar();
         setLocationRelativeTo(this);
         LlenarListas();
@@ -55,7 +76,6 @@ public class VM extends javax.swing.JFrame {
         Salvar = new Guardar();
         Salvar.LlenarAbonoAgendado(AbonoAgendado);
         Salvar.LlenarAbono(Abono);
-        Salvar.LlenarDebito(Debito);
         Salvar.LlenarTotales(Totales);
         Salvar.LlenarTotalAbonado(TotalAbonado);
         try {
@@ -96,10 +116,6 @@ public class VM extends javax.swing.JFrame {
                     Abono.add(Salvar.Abono.get(i));
                 }
 
-                for (int i = 0; i < Salvar.Debito.size(); i++) {
-                    Debito.add(Salvar.Debito.get(i));
-                }
-
                 for (int i = 0; i < Salvar.Totales.size(); i++) {
                     Totales.add(Salvar.Totales.get(i));
                 }
@@ -122,14 +138,9 @@ public class VM extends javax.swing.JFrame {
     public void LlenadoTabla() {
         DefaultTableModel ModeloTabla = (DefaultTableModel) jt_informacion.getModel();
         int Fila = 1;
-        System.out.println(Fechas.size());
-        System.out.println(Abono.size());
-        System.out.println(AbonoAgendado.size());
-        System.out.println(Debito.size());
-        System.out.println(Totales.size());
 
         while (Fila < 9) {
-            Object[] Row = new Object[6];
+            Object[] Row = new Object[5];
 
             Row[0] = Fechas.get(Fila - 1);
 
@@ -141,16 +152,12 @@ public class VM extends javax.swing.JFrame {
                 Row[2] = AbonoAgendado.get(Fila - 1);
             }
 
-            if (Debito.size() >= Fila) {
-                Row[3] = Debito.get(Fila - 1);
-            }
-
             if (Totales.size() >= Fila) {
-                Row[4] = Totales.get(Fila - 1);
+                Row[3] = Totales.get(Fila - 1);
             }
 
             if (TotalAbonado.size() >= Fila) {
-                Row[5] = TotalAbonado.get(Fila - 1);
+                Row[4] = TotalAbonado.get(Fila - 1);
             }
 
             Fila++;
@@ -181,12 +188,13 @@ public class VM extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jtf_valor = new javax.swing.JTextField();
         jb_pagar = new javax.swing.JButton();
-        jb_debitar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jl_dolares = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("PAhorro ©");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -199,14 +207,14 @@ public class VM extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Fecha", "Abono", "Abono Agendado", "Debito", "Total Lps.", "Total Abonado"
+                "Fecha", "Abono", "Abono Agendado", "Total Lps.", "Total Abonado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -224,7 +232,6 @@ public class VM extends javax.swing.JFrame {
             jt_informacion.getColumnModel().getColumn(2).setResizable(false);
             jt_informacion.getColumnModel().getColumn(3).setResizable(false);
             jt_informacion.getColumnModel().getColumn(4).setResizable(false);
-            jt_informacion.getColumnModel().getColumn(5).setResizable(false);
         }
 
         jLabel1.setText("Valor");
@@ -236,24 +243,15 @@ public class VM extends javax.swing.JFrame {
             }
         });
 
-        jb_debitar.setText("Debito");
-        jb_debitar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jb_debitarMouseClicked(evt);
-            }
-        });
-
         jLabel2.setText("Total Lps.");
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("34,500");
 
-        jButton1.setText("pruebas");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
+        jLabel3.setText("Total $");
+
+        jl_dolares.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jl_dolares.setText("0");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -266,32 +264,31 @@ public class VM extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(37, 37, 37)
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(jtf_valor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(60, 60, 60))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jb_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(93, 93, 93)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jl_dolares, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(25, 25, 25))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jb_pagar)
-                        .addGap(18, 18, 18)
-                        .addComponent(jb_debitar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jtf_valor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(60, 60, 60)
-                .addComponent(jLabel2)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
+                .addGap(55, 55, 55)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jtf_valor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -300,9 +297,10 @@ public class VM extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jb_pagar)
-                    .addComponent(jb_debitar))
-                .addGap(32, 32, 32)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jl_dolares))
+                .addGap(31, 31, 31)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -314,10 +312,6 @@ public class VM extends javax.swing.JFrame {
         guardar();
     }//GEN-LAST:event_formWindowClosing
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1MouseClicked
-
     private void jb_pagarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_pagarMouseClicked
         // TODO add your handling code here:
         boolean Seleccionado = true;
@@ -328,7 +322,6 @@ public class VM extends javax.swing.JFrame {
         if (!"".equals(jtf_valor.getText()) && !Pagado && Seleccionado) {
             DefaultTableModel ModeloTabla = (DefaultTableModel) jt_informacion.getModel();
 
-            System.out.println(jt_informacion.getSelectedRow());
             if (Abono.size() > jt_informacion.getSelectedRow()) {
                 Abono.set(jt_informacion.getSelectedRow(), Double.parseDouble(jtf_valor.getText()));
             } else {
@@ -336,20 +329,21 @@ public class VM extends javax.swing.JFrame {
             }
 
             if (jt_informacion.getSelectedRow() > 0) {
-                AbonoAgendado.add(Totales.get(jt_informacion.getSelectedRow() - 1) / 8 - jt_informacion.getSelectedRow());
+                AbonoAgendado.add(Totales.get(jt_informacion.getSelectedRow()) / (8 - (jt_informacion.getSelectedRow() + 1)));
                 Totales.add(Totales.get(jt_informacion.getSelectedRow() - 1) - Double.parseDouble(jtf_valor.getText()));
                 TotalAbonado.add(TotalAbonado.get(jt_informacion.getSelectedRow() - 1) + Double.parseDouble(jtf_valor.getText()));
             } else {
                 if (!TotalAbonado.isEmpty()) {
                     TotalAbonado.remove(0);
                 }
-                
+
                 if (Totales.size() == 2) {
                     Totales.remove(1);
                 }
-                
+
                 TotalAbonado.add(Double.parseDouble(jtf_valor.getText()));
                 Totales.add(Totales.get(0) - Double.parseDouble(jtf_valor.getText()));
+                AbonoAgendado.add(Totales.get(jt_informacion.getSelectedRow()) / (8 - (jt_informacion.getSelectedRow() + 1)));
             }
 
             LimpiarTabla();
@@ -360,9 +354,10 @@ public class VM extends javax.swing.JFrame {
                     Pagado = true;
                 }
             }
-            
+
             jtf_valor.setText("");
-            
+            jl_dolares.setText(Double.toString(TotalAbonado.get(TotalAbonado.size() - 1) / 23));
+
         } else if ("".equals(jtf_valor.getText())) {
             JOptionPane.showMessageDialog(this, "El campo del valor esta vacio",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -372,17 +367,10 @@ public class VM extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Ya has completado el pago total",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
-            
+
             jtf_valor.setText("");
         }
     }//GEN-LAST:event_jb_pagarMouseClicked
-
-    private void jb_debitarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_debitarMouseClicked
-        // TODO add your handling code here:
-        if (!"".equals(jtf_valor.getText())) {
-
-        }
-    }//GEN-LAST:event_jb_debitarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -421,20 +409,19 @@ public class VM extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton jb_debitar;
     private javax.swing.JButton jb_pagar;
+    private javax.swing.JLabel jl_dolares;
     private javax.swing.JTable jt_informacion;
     private javax.swing.JTextField jtf_valor;
     // End of variables declaration//GEN-END:variables
     ArrayList<String> Fechas = new ArrayList();
     ArrayList<Double> AbonoAgendado = new ArrayList();
     ArrayList<Double> Abono = new ArrayList();
-    ArrayList<Double> Debito = new ArrayList();
     ArrayList<Double> Totales = new ArrayList();
     ArrayList<Double> TotalAbonado = new ArrayList();
 

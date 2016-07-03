@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class Guardar implements Serializable{
     ArrayList<Double> AbonoAgendado = new ArrayList();
     ArrayList<Double> Abono = new ArrayList();
-    ArrayList<Double> Debito = new ArrayList();
     ArrayList<Double> Totales = new ArrayList();
     ArrayList<Double> TotalAbonado = new ArrayList();
 
@@ -28,12 +27,6 @@ public class Guardar implements Serializable{
     public void LlenarAbono(ArrayList<Double> Abono_guardados) {
         for (int i = 0; i < Abono_guardados.size(); i++) {
             Abono.add(Abono_guardados.get(i));
-        }
-    }
-
-    public void LlenarDebito(ArrayList<Double> Debito_guardados) {
-        for (int i = 0; i < Debito_guardados.size(); i++) {
-            Debito.add(Debito_guardados.get(i));
         }
     }
     
